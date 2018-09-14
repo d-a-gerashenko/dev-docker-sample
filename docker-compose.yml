@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+
+    nginx:
+        build: ./services/nginx/
+        restart: always
+        ports:
+            - "80:80"
+        volumes:
+            - ./www:/www
+            - ./services/nginx/conf.d:/etc/nginx/conf.d
+        links:
+            - phpfpm
+    phpfpm:
+        build: ./services/phpfpm/
+        restart: always
+        volumes:
+            - ./www:/www
+        links:
+            - mysqldb
+            - postgresdb
+    adminer:
+        build: ./services/adminer/
+        restart: always
+        ports:
+            - 8080:8080
+        links:
+            - mysqldb
+            - postgresdb
+    mysqldb:
+        build: ./services/mysqldb/
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 123
+        ports:
+            - 3306:3306
+        volumes:
+            - ./services/mysqldb/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+            - ./services/mysqldb/db_data:/var/lib/mysql
+    postgresdb:
+        build: ./services/postgresdb/
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: 123
+        ports:
+            - 5432:5432
+        volumes:
+            - ./services/postgresdb/db_data:/var/lib/postgresql/data
