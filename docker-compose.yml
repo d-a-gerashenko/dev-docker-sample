@@ -8,7 +8,7 @@ services:
         ports:
             - "80:80"
         volumes:
-            - ./backend:/backend
+            - ./links/backend:/code
             - ./services/nginx/conf.d:/etc/nginx/conf.d
         links:
             - phpfpm
@@ -16,7 +16,7 @@ services:
         build: ./services/phpfpm/
         restart: always
         volumes:
-            - ./backend:/backend
+            - ./links/backend:/code
         links:
             - mysqldb
             - postgresdb
@@ -51,7 +51,5 @@ services:
     node:
         build: ./services/node/
         restart: always
-        ports:
-            - 81:80
         volumes:
-            - ./frontend:/frontend
+            - ./links/frontend:/code
