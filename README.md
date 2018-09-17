@@ -8,17 +8,10 @@
 4. `cd ./some_project_dir`
 5. `apt-get install docker-compose`
 6. `chmod 777 -R ./commands/`
-7. `./commands/containers/start.sh`
+7. Редактируем **.env**
+8. `./commands/containers/start.sh`
 
 На 80 порту работает nginx+fpm. На 8080 adminer. Проверяем, что они открываются.
-
-Путь к frontend и backend директориям задается через символические ссылки, которые лежат в директории **./links/**. По умолчанию обе ссылки ведут в директорию **./project/**.
-
-Чтобы изменить ссылки нужно сначала остановить контейнеры `./commands/containers/stop.sh`, затем удаляем старую ссылку `rm ./links/frontend` (`rm ./links/backend`) и создаем новую командой `ln -s ./path/to/dir/ ./links/frontend` (`ln -s ./path/to/dir/ ./links/backend`). Проверить пути ссылок можно командой `ls -la ./links/`.
-
-./path/to/dir - путь к исходным кодам фроненда или бекенда.
-
-В комплекте идет MySQL и Postgres.
 
 MySQL:
  - host: mysqldb
@@ -30,7 +23,7 @@ Postgres:
  - user: postgres
  - password: 123
 
-Есть отдельный контейнер для Node.
+Есть отдельный контейнер для Node. Этот контейнер отрабатывает и завершается, если у него нет сервера. Список команд определяется в файле **./.env**.
 
 Настройки и файлы контейнеров лежат в **./services/**. Там же храняется файлы Dockerfile, в которых определяется образ и его версия, из которого создается контейнер.
 
