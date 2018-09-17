@@ -8,7 +8,7 @@
 4. `cd ./some_project_dir`
 5. `apt-get install docker-compose`
 6. `chmod 777 -R ./commands/`
-7. Редактируем **.env**
+7. Редактируем **./.env**
 8. `./commands/containers/start.sh`
 
 На 80 порту работает nginx+fpm. На 8080 adminer. Проверяем, что они открываются.
