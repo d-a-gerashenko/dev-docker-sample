@@ -14,6 +14,7 @@ services:
             - phpfpm
     phpfpm:
         build: ./services/phpfpm/
+        working_dir: /code
         restart: always
         volumes:
             - ./links/backend:/code
@@ -50,6 +51,7 @@ services:
             - ./services/postgresdb/db_data:/var/lib/postgresql/data
     node:
         build: ./services/node/
+        working_dir: /code
         restart: always
         volumes:
             - ./links/frontend:/code
