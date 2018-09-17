@@ -8,7 +8,7 @@ services:
         ports:
             - "80:80"
         volumes:
-            - ./links/backend:/code
+            - ${BACKEND_DIR}:/code
             - ./services/nginx/conf.d:/etc/nginx/conf.d
         links:
             - phpfpm
@@ -17,7 +17,7 @@ services:
         working_dir: /code
         restart: always
         volumes:
-            - ./links/backend:/code
+            - ${BACKEND_DIR}:/code
         links:
             - mysqldb
             - postgresdb
@@ -34,7 +34,7 @@ services:
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: 123
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         ports:
             - 3306:3306
         volumes:
@@ -44,14 +44,17 @@ services:
         build: ./services/postgresdb/
         restart: always
         environment:
-            POSTGRES_PASSWORD: 123
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
         ports:
             - 5432:5432
         volumes:
             - ./services/postgresdb/db_data:/var/lib/postgresql/data
     node:
         build: ./services/node/
+        environment:
+            - NODE_ENV=production
         working_dir: /code
-        restart: always
+        restart: "no"
         volumes:
-            - ./links/frontend:/code
+            - ${FRONTEND_DIR}:/code
+        command: ${NODE_COMMAND}
