@@ -4,9 +4,8 @@ services:
 
     nginx:
         build: ./services/nginx/
-        restart: always
         ports:
-            - "80:80"
+            - ${NGINX_PORT_ON_HOST}:80
         volumes:
             - ${BACKEND_DIR}:/code
             - ./services/nginx/conf.d:/etc/nginx/conf.d
@@ -15,24 +14,22 @@ services:
     phpfpm:
         build: ./services/phpfpm/
         working_dir: /code
-        restart: always
         volumes:
             - ${BACKEND_DIR}:/code
         links:
             - mysqldb
             - postgresdb
+        command: bash -c "bash -c \"${PHPFPM_COMMAND}\" && php-fpm"
     adminer:
         build: ./services/adminer/
-        restart: always
         ports:
-            - 8080:8080
+            - ${ADMINER_PORT_ON_HOST}:8080
         links:
             - mysqldb
             - postgresdb
     mysqldb:
         build: ./services/mysqldb/
         command: --default-authentication-plugin=mysql_native_password
-        restart: always
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         ports:
@@ -42,7 +39,6 @@ services:
             - ./services/mysqldb/db_data:/var/lib/mysql
     postgresdb:
         build: ./services/postgresdb/
-        restart: always
         environment:
             POSTGRES_PASSWORD: ${DB_PASSWORD}
         ports:
@@ -54,7 +50,8 @@ services:
         environment:
             - NODE_ENV=production
         working_dir: /code
-        restart: "no"
+        ports:
+            - ${NODE_PORT}
         volumes:
             - ${FRONTEND_DIR}:/code
-        command: ${NODE_COMMAND}
+        command: bash -c "bash -c \"${NODE_COMMAND}\" && tail -f /dev/null"
